@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import {Route, Switch} from "react-router-dom";
+import UserSearchPage from "./pages/UserSearchPage";
+import UserReposListPage from "./pages/UserReposListPage";
+import RepoDetails from "./pages/RepoDetails";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <Switch>
+            <Route exact path='/'>
+                <UserSearchPage/>
+            </Route>
+            <Route exact path='/reposlist'>
+                <UserReposListPage/>
+            </Route>
+            <Route exact path='/repodetails'>
+                <RepoDetails/>
+            </Route>
+        </Switch>
+    );
 }
 
 export default App;
