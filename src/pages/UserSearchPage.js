@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import axios from "axios";
-import {API_REQUEST, USER_INFOS, ERROR} from "../store/actions";
+import {BASE_URL} from '../constants/constants'
+import {API_REQUEST, USER_INFOS, ERROR, USER_REPOS_LIST} from "../store/actions";
 import {useStore} from "../store";
 import {useHistory} from 'react-router-dom';
 import Header from "../components/Header/Header";
@@ -10,46 +11,47 @@ export default function UserSearchPage() {
     const [username, setUsername] = useState('');
     const [formErrors, setFormErrors] = useState('');
     const history = useHistory();
-    console.log('store', state)
+
+    const getUserInfos = async () => {
+        dispatch({type: API_REQUEST});
+        await axios.get(`${BASE_URL}/users/${username}`)
+            .then(res => {
+                dispatch({type: USER_INFOS, payload: res.data});
+                getReposList(res.data.repos_url);
+                history.push('/reposlist')
+            })
+            .catch(err => {
+                dispatch({type: ERROR, error: true});
+                if (err.response.status === 404) {
+                    setFormErrors("L'utilisateur n'existe pas.")
+                } else {
+                    setFormErrors('Une erreur est survenue.')
+                }
+            })
+    }
+
+    const getReposList = async (reposUrl) => {
+        dispatch({type: API_REQUEST});
+        await axios.get(`${reposUrl}`)
+            .then(res => {
+                dispatch({type: USER_REPOS_LIST, payload: res.data});
+            })
+            .catch(err => {
+                dispatch({type: ERROR, error: true});
+            })
+    }
 
     const handleChange = (e) => {
         setUsername(e.target.value)
     }
 
     const handleSubmit = async () => {
-        dispatch({type: API_REQUEST});
         if (username === '') {
-            setFormErrors('Le champs est vide');
+            setFormErrors('Le champ est vide');
         } else {
-            await axios.get(`https://api.github.com/users/${username}`)
-                .then(res => {
-                    dispatch({type: USER_INFOS, payload: res.data});
-                    history.push('/reposlist')
-                })
-                .catch(err => {
-                    dispatch({type: ERROR, error: true});
-                    if (err.response.status === 404) {
-                        setFormErrors("L'utilisateur n'existe pas.")
-                    } else {
-                        setFormErrors('Une erreur est survenue.')
-                    }
-                })
+            await getUserInfos();
         }
     }
-
-    // useEffect(() => {
-    //     // dispatch({ type: API_REQUEST });
-    //     // const getUserInfos = async () => {
-    //     //     let res = await axios.get(`https://api.github.com/users/${username}`);
-    //     //     console.log('res',res)
-    //     //     if (res.status === 200) {
-    //     //         dispatch({type: USER_INFOS, payload: res.data});
-    //     //         return;
-    //     //     }
-    //     //     dispatch({type: ERROR, error: res.error});
-    //     // }
-    //     // getUserInfos();
-    // }, []);
 
     return (
         <div className="flex-1 flex-column">

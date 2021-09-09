@@ -29,13 +29,13 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 loading: false,
-                userInfos: action.payload
+                userReposList: action.payload
             }
         case REPO_DETAILS:
             return {
                 ...state,
                 loading: false,
-                userInfos: action.payload
+                repoDetails: action.payload
             }
         case ERROR: {
             return {
