@@ -1,15 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
+import {
+    Link
+} from "react-router-dom";
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import {useStore} from "../store";
 import Header from "../components/Header/Header";
 import {Avatar} from "@material-ui/core";
 
 export default function UserReposListPage() {
-    const {state, dispatch} = useStore();
-    const [error, setError] = useState(false);
+    const {state} = useStore();
+    const [error] = useState(false);
     const userInfos = state.userInfos;
     const userReposList = state.userReposList;
-    console.log(state)
     return (
         <div className="flex-1 flex-column">
             <Header/>
@@ -17,13 +19,13 @@ export default function UserReposListPage() {
                 <Avatar alt={`${userInfos.name}`} src={`${userInfos.avatar_url}`}/>
                 <p>{userInfos.name}</p>
             </div>
-            {userReposList.map((item) => (
+            {userReposList.map((item,i) => (
                 <div className="flex w-3/5" key={item.id}>
                     <div className="flex-none">
                         <FolderOpenIcon/>
                     </div>
                     <p className="flex-grow text-center">
-                        {item.name}
+                        <Link to={`/repodetails/${item.id}`}>{item.name}</Link>
                     </p>
                 </div>
             ))}

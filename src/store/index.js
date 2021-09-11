@@ -1,5 +1,5 @@
 import React, {useReducer, createContext, useContext} from 'react';
-import {API_REQUEST, USER_INFOS, USER_REPOS_LIST, REPO_DETAILS, ERROR} from "./actions";
+import {API_REQUEST, USER_INFOS, USER_REPOS_LIST, ERROR} from "./actions";
 
 const StoreContext = createContext();
 
@@ -30,12 +30,6 @@ const reducer = (state, action) => {
                 ...state,
                 loading: false,
                 userReposList: action.payload
-            }
-        case REPO_DETAILS:
-            return {
-                ...state,
-                loading: false,
-                repoDetails: action.payload
             }
         case ERROR: {
             return {
