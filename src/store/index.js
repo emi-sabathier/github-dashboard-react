@@ -3,8 +3,6 @@ import {API_REQUEST, USER_INFOS, USER_REPOS_LIST, ERROR} from "./actions";
 
 const StoreContext = createContext();
 
-const baseUrl = 'https://api.github.com/users/';
-
 const initialState = {
     userInfos: {},
     userReposList: [],
