@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {BASE_URL} from '../constants/constants'
-import {API_REQUEST, USER_INFOS, ERROR, USER_REPOS_LIST} from "../store/actions";
+import {LOADING, USER_INFOS, ERROR, USER_REPOS_LIST} from "../store/actions";
 import {useStore} from "../store";
 import {useHistory} from 'react-router-dom';
 import Header from "../components/Header/Header";
@@ -9,12 +9,12 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import {CircularProgress} from "@material-ui/core";
 
 export default function UserSearchPage() {
-    const {dispatch} = useStore();
+    const {state,dispatch} = useStore();
     const [inputUsername, setInputUsername] = useState('');
     const [userList, setUserList] = useState([]);
-    const [usernameSelection, setUsernameSelection] = useState('');
     const [open, setOpen] = useState(false);
     const [formErrors, setFormErrors] = useState('');
     const history = useHistory();
@@ -39,10 +39,11 @@ export default function UserSearchPage() {
     }
 
     const getUserInfos = async () => {
-        dispatch({type: API_REQUEST});
+        dispatch({type: LOADING, payload: true});
         await axios.get(`${BASE_URL}/users/${inputUsername}`)
             .then(res => {
                 dispatch({type: USER_INFOS, payload: res.data});
+                dispatch({type: LOADING, payload: false});
                 getReposList(res.data.repos_url);
                 history.push('/reposlist')
             })
@@ -59,10 +60,11 @@ export default function UserSearchPage() {
     }
 
     const getReposList = async (reposUrl) => {
-        dispatch({type: API_REQUEST});
+        dispatch({type: LOADING, payload: true});
         await axios.get(`${reposUrl}`)
             .then(res => {
                 dispatch({type: USER_REPOS_LIST, payload: res.data});
+                dispatch({type: LOADING, payload: false});
             })
             .catch(err => {
                 dispatch({type: ERROR, error: true});
@@ -78,6 +80,7 @@ export default function UserSearchPage() {
 
     const handleUserNameSelection = (selection) => {
         setInputUsername(selection);
+        setUserList([])
     }
 
     const handleChange = (e) => {
@@ -108,6 +111,7 @@ export default function UserSearchPage() {
                         type="button">
                     Search
                 </button>
+                {state.loading ? <CircularProgress /> : null}
             </div>
             {userList.length > 0 ? <div
                 className="mx-5 grid grid-cols-1 border-t border-r border-l border-b border-gray-400 divide-y divide-gray-400 w-2/4">
@@ -117,7 +121,6 @@ export default function UserSearchPage() {
                     </p>
                 ))}
             </div> : null}
-
             <Snackbar
                 anchorOrigin={{
                     vertical: 'bottom',

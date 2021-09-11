@@ -1,7 +1,8 @@
-import {Route, Switch} from "react-router-dom";
+import {Route, Switch, Redirect} from "react-router-dom";
 import UserSearchPage from "./pages/UserSearchPage";
 import UserReposListPage from "./pages/UserReposListPage";
 import RepoDetails from "./pages/RepoDetails";
+import NotFound from "./pages/NotFound";
 
 function App() {
     return (
@@ -10,11 +11,14 @@ function App() {
                 <Route exact path='/'>
                     <UserSearchPage/>
                 </Route>
-                <Route exact path='/reposlist'>
+                <Route path='/reposlist'>
                     <UserReposListPage/>
                 </Route>
-                <Route exact path='/repodetails/:id'>
+                <Route path='/repodetails/:id'>
                     <RepoDetails/>
+                </Route>
+                <Route>
+                    <NotFound />
                 </Route>
             </Switch>
         </>
