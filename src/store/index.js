@@ -6,7 +6,6 @@ const StoreContext = createContext();
 const initialState = {
     userInfos: {},
     userReposList: [],
-    repoDetails: {},
     loading: false,
     error: false,
 }
